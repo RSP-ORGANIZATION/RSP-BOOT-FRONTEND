@@ -1,0 +1,28 @@
+:root {
+  --primary-button-background: rgb(0, 0, 16, 0.914);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter";
+}
+
+.lobster {
+  font-family: "Lobster";
+}
+
+.appear-animation {
+  animation: appear-animation 500ms ease;
+}
+
+@keyframes appear-animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

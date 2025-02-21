@@ -1,0 +1,41 @@
+.main-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  background-image: url("../public/food-image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(0, 0, 0, 0.322);
+  background-blend-mode: multiply;
+}
+
+.main-component {
+  flex: 1;
+  color: white;
+
+  display: grid;
+  place-content: center;
+}
+
+.inner-main {
+  max-width: 1000px;
+  background-color: rgba(0, 0, 0, 0.333);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inner-main h1 {
+  font-size: clamp(1rem, 10vh, 4rem);
+  font-family: "Lobster";
+  text-align: center;
+}
+
+.inner-main p {
+  text-align: center;
+}
