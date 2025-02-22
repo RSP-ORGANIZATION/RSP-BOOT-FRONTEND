@@ -26,3 +26,17 @@
     opacity: 1;
   }
 }
+
+.slide-animation {
+  animation: slide-animation 500ms ease;
+}
+
+@keyframes slide-animation {
+  from {
+    transform: translateX(-20px);
+  }
+
+  to {
+    transform: translateX(0px);
+  }
+}

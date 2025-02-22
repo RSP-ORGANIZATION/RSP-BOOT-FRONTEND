@@ -1,18 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/navbar";
 import "./signup.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { executeToast } from "../../utils/execute-toast";
+import Toast from "../../components/Toast/toast";
 
 export default function Signup() {
-  const [formData, setFormData] = useState({ phone: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    password: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const authPatterns = {
+    name: /^[A-Za-z]+ [A-Za-z]+$/,
     phone: /^[6789]\d{9}$/,
     password:
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+  };
+
+  const errorFields = {
+    name: {
+      title: "Invalid name",
+      description: "The name should only consist of letters",
+    },
+    phone: {
+      title: "Invalid Phone Number",
+      description: "The phone number should consist of 10 digits.",
+    },
+    password: {
+      title: "Invalid Password",
+      description:
+        "Minimum length: 8, Should contain each of uppercase, lowercase, number and special character",
+    },
   };
 
   // ! Importing BACKEND url
@@ -32,51 +55,50 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!authPatterns["phone"].test(formData["phone"])) {
-      toast({
-        title: "Invalid Phone Number",
-        description: "The phone number should consist of 10 digits.",
+    const invalidField = Object.keys(formData).find((item) => {
+      return !authPatterns[item].test(formData[item]);
+    });
+
+    if (invalidField) {
+      const { title, description } = errorFields[invalidField];
+      executeToast({
+        title: title,
+        content: description,
       });
-      return;
-    }
-    // 8+ chars, uppercase, lowercase, number, special char
-    if (!authPatterns["password"].test(formData["password"])) {
-      toast({
-        title: "Invalid Password",
-        description:
-          "Minimum length: 8, Should contain each of uppercase, lowercase, number and special character",
-      });
+      setIsLoading(false);
       return;
     }
 
-    async function authenticateUser() {
+    async function createAccount() {
       try {
-        const completeUrl = backendUrl + "login";
+        const completeUrl = backendUrl + "signup";
+        console.log(completeUrl);
         const response = await axios.post(completeUrl, formData);
         if (response.status === 200) {
-          console.log("Response:", response);
-          const token = response.data.token;
-
-          if (localStorage) {
-            localStorage.setItem("token", token);
-            console.log("token:", token);
-          }
-          navigate("/home", { state: { authenticLogin: true }, replace: true });
+          executeToast({
+            title: "Account created",
+            content: "Now you can log into your account",
+          });
+          setTimeout(() => {
+            navigate("/login", {
+              replace: true,
+            });
+          }, 2000);
         }
       } catch (error) {
         if (error.response) {
           const { status, data } = error.response;
           const { message } = data;
-          if (status === 404) {
-            toast({
+          if (status === 400) {
+            executeToast({
               title: message,
-              description:
-                "The entered number is not registered with any account",
+              content:
+                "The entered number is already registered with an account",
             });
           } else if (status === 401) {
-            toast({
+            executeToast({
               title: message,
-              description: "The entered password is incorrect",
+              content: "The entered password is incorrect",
             });
           }
         } else if (error.request) {
@@ -86,15 +108,21 @@ export default function Signup() {
           // ! Other errors (wrong config, etc.)
           console.error("Axios Error:", error.message);
         }
+      } finally {
+        setIsLoading(false);
       }
     }
-    await authenticateUser();
-    setIsLoading(false);
+    await createAccount();
   }
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   return (
     <div className="signup-page appear-animation">
       <Navbar />
+      <Toast />
       <main className="signup-main-component">
         <form action="" onSubmit={handleSubmit} className="signup-form">
           <section>
@@ -103,15 +131,32 @@ export default function Signup() {
           </section>
           <section>
             <label htmlFor="name">Name</label>
-            <input type="text" placeholder="John Doe" id="name" />
+            <input
+              type="text"
+              placeholder="John Doe"
+              id="name"
+              name="name"
+              onChange={handleChange}
+            />
           </section>
           <section>
             <label htmlFor="phone">Phone</label>
-            <input type="text" placeholder="1234567890" id="phone" />
+            <input
+              type="text"
+              placeholder="1234567890"
+              id="phone"
+              name="phone"
+              onChange={handleChange}
+            />
           </section>
           <section>
             <label htmlFor="password">Password</label>
-            <input type="text" id="password" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              onChange={handleChange}
+            />
           </section>
 
           <button type="submit" disabled={isLoading}>
@@ -119,15 +164,17 @@ export default function Signup() {
           </button>
           <p style={{ textAlign: "center" }}>
             Don&apos;t have an account?{" "}
-            <Link
+            <button
+              onClick={() => navigate("/login", { replace: true })}
+              className="login-link"
               style={{
                 color: "#242424",
                 fontWeight: "600",
               }}
-              to={"/login"}
+              type="button"
             >
               Login
-            </Link>
+            </button>
           </p>
         </form>
       </main>

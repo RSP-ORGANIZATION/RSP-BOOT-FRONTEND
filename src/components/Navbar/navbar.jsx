@@ -6,7 +6,11 @@ export default function Navbar({ loginVisible = false }) {
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary nav-custom-style">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/" style={{fontWeight: "bold", fontSize: '1.5rem'}}>
+          <a
+            className="navbar-brand"
+            href="/"
+            style={{ fontWeight: "normal", fontSize: "1.5rem" }}
+          >
             Epic Eats
           </a>
           <button

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Navbar from "../../components/Navbar/navbar";
 import "./login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { executeToast } from "../../utils/execute-toast";
+import Toast from "../../components/Toast/toast";
 
 export default function Login() {
   const [formData, setFormData] = useState({ phone: "", password: "" });
@@ -14,6 +15,18 @@ export default function Login() {
     phone: /^[6789]\d{9}$/,
     password:
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+  };
+
+  const errorFields = {
+    phone: {
+      title: "Invalid Phone Number",
+      description: "The phone number should consist of 10 digits.",
+    },
+    password: {
+      title: "Invalid Password",
+      description:
+        "Minimum length: 8, Should contain each of uppercase, lowercase, number and special character",
+    },
   };
 
   // ! Importing BACKEND url
@@ -33,20 +46,17 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!authPatterns["phone"].test(formData["phone"])) {
+    const invalidField = Object.keys(formData).find((item) => {
+      return !authPatterns[item].test(formData[item]);
+    });
+
+    if (invalidField) {
+      const { title, description } = errorFields[invalidField];
       executeToast({
-        title: "Invalid Phone Number",
-        content: "The phone number should consist of 10 digits.",
+        title: title,
+        content: description,
       });
-      return;
-    }
-    // 8+ chars, uppercase, lowercase, number, special char
-    if (!authPatterns["password"].test(formData["password"])) {
-      executeToast({
-        title: "Invalid Password",
-        content:
-          "Minimum length: 8, Should contain each of uppercase, lowercase, number and special character",
-      });
+      setIsLoading(false);
       return;
     }
 
@@ -55,12 +65,13 @@ export default function Login() {
         const completeUrl = backendUrl + "login";
         const response = await axios.post(completeUrl, formData);
         if (response.status === 200) {
-          console.log("Response:", response);
-          const token = response.data.token;
+          const token = response.data?.token;
 
-          if (localStorage) {
+          if (localStorage && token) {
             localStorage.setItem("token", token);
             console.log("token:", token);
+          } else {
+            return;
           }
           navigate("/home", { state: { authenticLogin: true }, replace: true });
         }
@@ -96,6 +107,7 @@ export default function Login() {
   return (
     <div className="login-page appear-animation">
       <Navbar />
+      <Toast />
       <main className="login-main-component">
         <form action="" onSubmit={handleSubmit} className="login-form">
           <section>
@@ -116,7 +128,7 @@ export default function Login() {
           <section>
             <label htmlFor="password">Password</label>
             <input
-              type="text"
+              type="password"
               id="password"
               name="password"
               onChange={handleChange}
