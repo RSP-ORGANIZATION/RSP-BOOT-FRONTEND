@@ -25,7 +25,7 @@ export default function App() {
             and connect with fellow cooks. Start your culinary journey today.
           </p>
           <Link to={"/signup"}>
-            <button className="btn btn-primary">Signup</button>
+            <button className="btn btn-primary" style={{padding: '7px 20px'}}>Signup</button>
           </Link>
         </div>
       </main>
