@@ -1,0 +1,53 @@
+.status {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.status i {
+  font-size: 1.2rem;
+}
+
+.ingredients-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.form-body {
+  height: 70vh;
+  overflow: auto;
+}
+
+.outer-steps {
+  display: grid;
+  gap: 10px;
+  padding-block: 10px;
+}
+
+.steps-container {
+  display: flex;
+  gap: 5px;
+}
+
+.steps-container section {
+  width: 50px;
+  border-radius: 7px;
+  display: grid;
+  place-content: center;
+  border: 1px solid gray;
+}
+
+.steps-container input {
+  flex: 1;
+}
+
+.steps-parent {
+  display: flex;
+  flex-direction: column;
+}
+
+button.add-step {
+  margin-inline: auto;
+  width: 50%;
+}

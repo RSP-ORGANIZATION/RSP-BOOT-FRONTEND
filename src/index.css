@@ -6,7 +6,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Inter";
+  font-family: "Geist";
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
 }
 
 .lobster {

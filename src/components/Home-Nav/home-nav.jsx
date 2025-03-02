@@ -1,23 +1,20 @@
-export default function HomeNav({
-  setSearchContent,
-  searchContent,
-  handleSearch,
-}) {
+import AddRecipeModal from "../../pages/Homepage/add-recipe-modal";
+import "./home-nav.css";
+
+export default function HomeNav(props) {
+  const { searchContent, handleSearch } = props;
   function handleChange(e) {
     const { value } = e.target;
-    const capitalized = value
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    setSearchContent(capitalized);
+    searchContent.current = value;
   }
 
   return (
-    <nav className="navbar navbar-expand-lg bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg bg-body-tertiary home-nav-custom">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          Navbar
+        <a className="navbar-brand" href="#" style={{ fontWeight: "bold" }}>
+          Epic Eats
         </a>
+        <AddRecipeModal />
         <button
           className="navbar-toggler"
           type="button"
@@ -39,17 +36,23 @@ export default function HomeNav({
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Categories
+                Actions
               </a>
               <ul className="dropdown-menu">
                 <li>
-                  <button className="dropdown-item" href="#">
-                    Vegetarian
+                  <button
+                    className="dropdown-item"
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    data-bs-whatever="@mdo"
+                  >
+                    Add Recipe
                   </button>
                 </li>
                 <li>
                   <button className="dropdown-item" href="#">
-                    Non-Vegetarian
+                    Favorites
                   </button>
                 </li>
                 <li>
@@ -70,10 +73,9 @@ export default function HomeNav({
               placeholder="Search"
               aria-label="Search"
               onChange={handleChange}
-              value={searchContent}
             />
             <button className="btn btn-outline-success" type="submit">
-              Search
+              Go
             </button>
           </form>
         </div>

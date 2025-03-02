@@ -1,37 +1,144 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import HomeNav from "../../components/Home-Nav/home-nav";
 import Toast from "../../components/Toast/toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { executeToast } from "../../utils/execute-toast";
+import "./homepage.css";
+import RecipeCardPlaceholder from "./card-placeholder";
+import axios from "axios";
+import RecipeDetailDialog from "./recipe-dialog/recipe-detail-dialog";
+
+const CardLayout = ({ data }) => {
+  const { _id, title, imageUrl, description } = data;
+  console.log("data: ", data);
+
+  return (
+    <div className="recipe-card">
+      <img src={imageUrl} alt="Pizza image" />
+      <RecipeDetailDialog data={data} modalId={`recipe-detail-${_id}`} />
+      <div className="details">
+        <h2>{title ? title : "Sample Name"}</h2>
+        <p style={{ fontSize: "0.85rem" }}>{description}</p>
+        <div className="footer">
+          <button
+            type="button"
+            className="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target={`#recipe-detail-${_id}`}
+          >
+            Get Recipe
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Homepage() {
-  const [searchContent, setSearchContent] = useState("");
-  const location = useLocation();
+  const searchContent = useRef("");
   const navigate = useNavigate();
 
-  function handleSearch(e) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [recipes, setRecipes] = useState([]);
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const getFilteredItems = async () => {
+    try {
+      const completeUrl = backendUrl + "recipe/getbyname";
+      const response = await axios.post(completeUrl, {
+        item: searchContent.current,
+      });
+
+      const { status, data } = response;
+      const { recipes: filteredRecipes } = data;
+      console.log("Filtered items:", filteredRecipes);
+      if (status === 200 && filteredRecipes) {
+        return filteredRecipes;
+      }
+    } catch (error) {
+      console.log("Eroor:", error);
+    }
+  };
+
+  const handleSearch = async (e) => {
     e.preventDefault();
-    if (!searchContent) return;
-    executeToast({ title: "Form submitted", content: searchContent });
-    setSearchContent("");
-  }
+    if (!searchContent.current) return;
+    executeToast({ title: "Form submitted", content: searchContent.current });
+    const items = await getFilteredItems();
+    setRecipes(items);
+    searchContent.current = "";
+  };
+
+  const getAllRecipes = useCallback(async () => {
+    setIsLoading(true);
+    async function perform() {
+      try {
+        const completeUrl = import.meta.env.VITE_BACKEND_URL + "recipe/all";
+        const response = await axios.get(completeUrl);
+        if (response.status === 200) {
+          const { recipes: recps } = response.data;
+          setTimeout(() => {
+            setRecipes(recps);
+            setIsLoading(false);
+          }, 2000);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    await perform();
+  }, []);
+
+  const isAlreadyLoggedIn = useCallback(async () => {
+    async function perform() {
+      let token;
+      if (localStorage) {
+        token = localStorage.getItem("token");
+      }
+      if (!token) {
+        navigate("/login", { replace: true });
+      }
+      try {
+        const completeUrl = backendUrl + "protected-route";
+        const response = await axios.post(completeUrl, { token: token });
+        if (response.status === 200) {
+          navigate("/home", { replace: true });
+        }
+      } catch (error) {
+        console.log("Auth error:", error);
+      }
+    }
+    await perform();
+  }, [backendUrl, navigate]);
 
   useEffect(() => {
-    const authenticLogin = location.state?.authenticLogin ?? false;
-    if (!authenticLogin) {
-      navigate("/login", { replace: true });
-    }
-  }, [location.state?.authenticLogin, navigate]);
+    isAlreadyLoggedIn();
+    getAllRecipes();
+  }, [getAllRecipes, isAlreadyLoggedIn]);
 
   return (
     <div className="homepage">
-      <HomeNav
-        setSearchContent={setSearchContent}
-        searchContent={searchContent}
-        handleSearch={handleSearch}
-      />
+      <HomeNav searchContent={searchContent} handleSearch={handleSearch} />
+      <RecipeDetailDialog />
       <Toast position="bottom-0 end-0" />
-      <div className="main-component"></div>
+      <div className="home-main-component">
+        {isLoading ? (
+          <>
+            {[1, 2, 3, 4, 5, 6].map((_, idx) => (
+              <RecipeCardPlaceholder key={idx} />
+            ))}
+          </>
+        ) : (
+          <>
+            {recipes.map((item, idx) => {
+              return <CardLayout key={idx} data={item} />;
+            })}
+          </>
+        )}
+      </div>
     </div>
   );
 }

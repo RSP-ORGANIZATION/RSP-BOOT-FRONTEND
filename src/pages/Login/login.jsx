@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/navbar";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
@@ -103,6 +103,29 @@ export default function Login() {
     await authenticateUser();
     setIsLoading(false);
   }
+
+  async function isAlreadyLoggedIn() {
+    async function perform() {
+      let token;
+      if (localStorage) {
+        token = localStorage.getItem("token");
+      }
+      try {
+        const completeUrl = backendUrl + "protected-route";
+        const response = await axios.post(completeUrl, { token: token });
+        if (response.status === 200) {
+          navigate("/home", { replace: true });
+        }
+      } catch (error) {
+        console.log("Auth error:", error);
+      }
+    }
+    await perform();
+  }
+
+  useEffect(() => {
+    isAlreadyLoggedIn();
+  });
 
   return (
     <div className="login-page appear-animation">

@@ -1,0 +1,53 @@
+.recipe-card-placeholder {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0f0f0;
+  padding: 16px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+.title-placeholder {
+  width: 80%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.text-placeholder {
+  width: 100%;
+  height: 14px;
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.text-placeholder.short {
+  width: 80%;
+}
+
+.text-placeholder.shorter {
+  width: 60%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
