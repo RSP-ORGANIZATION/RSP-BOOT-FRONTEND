@@ -108,16 +108,16 @@ const AddRecipeModal = () => {
   return (
     <div
       className="modal fade"
-      id="exampleModal"
+      id="add-recipe-modal"
       tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="add-recipe-modal-label"
       aria-hidden="true"
       style={{ willChange: "transform" }}
     >
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h1 className="modal-title fs-5" id="exampleModalLabel">
+            <h1 className="modal-title fs-5" id="add-recipe-modal-label">
               Add Recipe
             </h1>
             <button

@@ -11,7 +11,7 @@
 
   display: grid;
   gap: 30px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .recipe-card {
@@ -84,9 +84,11 @@
   place-content: center;
 }
 
-/* .footer i::before {
-  background-color: rgb(255, 0, 106);
-} */
+@media screen and (max-width: 1200px) {
+  .home-main-component {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
 @media screen and (max-width: 1000px) {
   .home-main-component {

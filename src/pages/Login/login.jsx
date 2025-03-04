@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/navbar";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
@@ -104,7 +104,7 @@ export default function Login() {
     setIsLoading(false);
   }
 
-  async function isAlreadyLoggedIn() {
+  const isAlreadyLoggedIn = useCallback(async () => {
     async function perform() {
       let token;
       if (localStorage) {
@@ -121,11 +121,11 @@ export default function Login() {
       }
     }
     await perform();
-  }
+  }, [backendUrl, navigate]);
 
   useEffect(() => {
     isAlreadyLoggedIn();
-  });
+  }, [isAlreadyLoggedIn]);
 
   return (
     <div className="login-page appear-animation">

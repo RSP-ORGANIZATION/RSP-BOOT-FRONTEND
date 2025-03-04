@@ -1,53 +1,61 @@
 .status {
-  position: absolute;
-  top: 5px;
-  right: 5px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 .status i {
-  font-size: 1.2rem;
+    font-size: 1.2rem;
 }
 
 .ingredients-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
 .form-body {
-  height: 70vh;
-  overflow: auto;
+    height: 70vh;
+    overflow: auto;
 }
 
 .outer-steps {
-  display: grid;
-  gap: 10px;
-  padding-block: 10px;
+    display: grid;
+    gap: 10px;
+    padding-block: 10px;
 }
 
 .steps-container {
-  display: flex;
-  gap: 5px;
+    display: flex;
+    gap: 5px;
 }
 
 .steps-container section {
-  width: 50px;
-  border-radius: 7px;
-  display: grid;
-  place-content: center;
-  border: 1px solid gray;
+    width: 50px;
+    border-radius: 7px;
+    display: grid;
+    place-content: center;
+    border: 1px solid gray;
 }
 
 .steps-container input {
-  flex: 1;
+    flex: 1;
 }
 
 .steps-parent {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 button.add-step {
-  margin-inline: auto;
-  width: 50%;
+    margin-inline: auto;
+    width: 50%;
+}
+
+.logout-button {
+    transition: 500ms;
+    &:hover {
+        background-color: rgb(255, 86, 86);
+        color: white;
+    }
 }

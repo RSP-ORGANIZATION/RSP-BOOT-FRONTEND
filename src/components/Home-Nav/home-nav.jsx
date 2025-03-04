@@ -1,12 +1,20 @@
 import AddRecipeModal from "../../pages/Homepage/add-recipe-modal";
 import "./home-nav.css";
-
+import FavoriteDialog from "../../pages/Homepage/favorite-dialog/favorite-dialog";
+import { useNavigate } from "react-router-dom";
 export default function HomeNav(props) {
   const { searchContent, handleSearch } = props;
+  const navigate = useNavigate();
+
   function handleChange(e) {
     const { value } = e.target;
     searchContent.current = value;
   }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary home-nav-custom">
@@ -15,6 +23,7 @@ export default function HomeNav(props) {
           Epic Eats
         </a>
         <AddRecipeModal />
+        <FavoriteDialog />
         <button
           className="navbar-toggler"
           type="button"
@@ -44,14 +53,20 @@ export default function HomeNav(props) {
                     className="dropdown-item"
                     href="#"
                     data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
+                    data-bs-target="#add-recipe-modal"
                     data-bs-whatever="@mdo"
                   >
                     Add Recipe
                   </button>
                 </li>
                 <li>
-                  <button className="dropdown-item" href="#">
+                  <button
+                    className="dropdown-item"
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#favorite-dialog"
+                    data-bs-whatever="@mdo"
+                  >
                     Favorites
                   </button>
                 </li>
@@ -59,8 +74,8 @@ export default function HomeNav(props) {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <button className="dropdown-item" href="#">
-                    Today&apos;s Special
+                  <button className="dropdown-item logout-button" onClick={handleLogout}>
+                    Logout
                   </button>
                 </li>
               </ul>

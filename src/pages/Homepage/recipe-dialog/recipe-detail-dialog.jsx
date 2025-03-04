@@ -1,9 +1,35 @@
+import { useContext } from "react";
 import "./recipe-detail.dialog.css";
+import { UserContext } from "../../../contexts/user-phone-context";
+import axios from "axios";
+import { executeToast } from "../../../utils/execute-toast";
 
 const RecipeDetailDialog = ({ data = {}, modalId }) => {
   const { _id, title, description, steps, imageUrl, ingredients } = data;
+  const { userPhone } = useContext(UserContext);
 
-  const handleFavoriteAction = () => {};
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const handleFavoriteAction = async () => {
+    async function addFavoriteRecipe() {
+      try {
+        const completeUrl = backendUrl + "recipe/favorites/add";
+        const response = await axios.post(completeUrl, {
+          userPhone: userPhone,
+          recipeId: _id,
+        });
+        if (response.status === 200) {
+          executeToast({
+            title: "Success",
+            content: "Recipe added to favorites",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    await addFavoriteRecipe();
+  };
 
   return (
     <div
@@ -53,7 +79,6 @@ const RecipeDetailDialog = ({ data = {}, modalId }) => {
                 {steps?.map((step, idx) => {
                   return (
                     <section key={idx} className="steps-detail-container">
-                      {/* <i className="fa-regular fa-circle"></i> */}
                       <p>{idx + 1}.</p>
                       <p>{step}</p>
                     </section>

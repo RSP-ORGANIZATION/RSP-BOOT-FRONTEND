@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import HomeNav from "../../components/Home-Nav/home-nav";
 import Toast from "../../components/Toast/toast";
 import { useNavigate } from "react-router-dom";
@@ -7,10 +7,10 @@ import "./homepage.css";
 import RecipeCardPlaceholder from "./card-placeholder";
 import axios from "axios";
 import RecipeDetailDialog from "./recipe-dialog/recipe-detail-dialog";
+import { UserContext } from "../../contexts/user-phone-context";
 
 const CardLayout = ({ data }) => {
   const { _id, title, imageUrl, description } = data;
-  console.log("data: ", data);
 
   return (
     <div className="recipe-card">
@@ -38,6 +38,8 @@ export default function Homepage() {
   const searchContent = useRef("");
   const navigate = useNavigate();
 
+  const { setUserPhone } = useContext(UserContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [recipes, setRecipes] = useState([]);
 
@@ -64,7 +66,10 @@ export default function Homepage() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchContent.current) return;
-    executeToast({ title: "Form submitted", content: searchContent.current });
+    executeToast({
+      title: "Form submitted",
+      content: "To go back to homepage just refresh",
+    });
     const items = await getFilteredItems();
     setRecipes(items);
     searchContent.current = "";
@@ -78,10 +83,10 @@ export default function Homepage() {
         const response = await axios.get(completeUrl);
         if (response.status === 200) {
           const { recipes: recps } = response.data;
-          setTimeout(() => {
-            setRecipes(recps);
-            setIsLoading(false);
-          }, 2000);
+          setRecipes(recps);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -104,7 +109,12 @@ export default function Homepage() {
       try {
         const completeUrl = backendUrl + "protected-route";
         const response = await axios.post(completeUrl, { token: token });
-        if (response.status === 200) {
+
+        const { status, data } = response;
+        const { phone } = data;
+        setUserPhone(phone);
+
+        if (status === 200) {
           navigate("/home", { replace: true });
         }
       } catch (error) {
@@ -112,11 +122,14 @@ export default function Homepage() {
       }
     }
     await perform();
-  }, [backendUrl, navigate]);
+  }, [backendUrl, navigate, setUserPhone]);
 
   useEffect(() => {
-    isAlreadyLoggedIn();
-    getAllRecipes();
+    setTimeout(() => {
+      isAlreadyLoggedIn().then(() => {
+        getAllRecipes();
+      });
+    }, 2000);
   }, [getAllRecipes, isAlreadyLoggedIn]);
 
   return (
@@ -131,12 +144,14 @@ export default function Homepage() {
               <RecipeCardPlaceholder key={idx} />
             ))}
           </>
-        ) : (
+        ) : recipes.length > 0 ? (
           <>
             {recipes.map((item, idx) => {
               return <CardLayout key={idx} data={item} />;
             })}
           </>
+        ) : (
+          <p>No items found</p>
         )}
       </div>
     </div>
