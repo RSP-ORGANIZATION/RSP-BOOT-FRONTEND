@@ -36,10 +36,20 @@ const FavoriteDialog = () => {
     const firstModal = bootstrap.Modal.getInstance(firstModalEl);
 
     if (firstModal) {
-      firstModalEl.addEventListener("hidden.bs.modal", function () {
-        openSecondModal(recipeId);
-      });
+      // Listen for the modal close event once
+      firstModalEl.addEventListener(
+        "hidden.bs.modal",
+        function onFirstModalHidden() {
+          firstModalEl.removeEventListener(
+            "hidden.bs.modal",
+            onFirstModalHidden
+          );
+          openSecondModal(recipeId);
+        },
+        { once: true } // Ensures it runs only once
+      );
 
+      // Close the first modal
       firstModal.hide();
     } else {
       openSecondModal(recipeId);
@@ -47,20 +57,20 @@ const FavoriteDialog = () => {
   }
 
   function openSecondModal(recipeId) {
-    setTimeout(() => {
-      const secondModalEl = document.getElementById(recipeId);
+    const secondModalEl = document.getElementById(recipeId);
 
-      if (secondModalEl) {
+    if (secondModalEl) {
+      setTimeout(() => {
         const secondModal = new bootstrap.Modal(secondModalEl, {
           backdrop: "static",
           keyboard: false,
         });
 
         secondModal.show();
-      } else {
-        console.error(`Modal with ID ${recipeId} not found.`);
-      }
-    }, 300); // Ensure the first modal is fully closed before opening the second
+      }, 100); // Slight delay to avoid conflicts
+    } else {
+      console.error(`Modal with ID ${recipeId} not found.`);
+    }
   }
 
   useEffect(() => {
@@ -102,22 +112,23 @@ const FavoriteDialog = () => {
                     <p>{description}</p>
                     {/* <button
                       className="btn btn-primary"
-                      data-bs-target={`#favorite-dialog-${idx}`}
-                      data-bs-toggle="modal"
-                    >
-                      <i className="fa-solid fa-arrow-right"></i>
-                    </button> */}
-                    <button
-                      className="btn btn-primary"
                       onClick={() =>
                         handleCurrentModalClose(`favorite-recipe-dialog-${idx}`)
                       }
+                      disabled
                     >
-                      <i className="fa-solid fa-arrow-right"></i>
-                    </button>
+                      <i
+                        className="fa-solid fa-arrow-right"
+                        style={{ textDecoration: "line-through" }}
+                      ></i>
+                    </button> */}
                   </div>
                 </div>
               ))}
+              <p>
+                Note: Currently you can only save recipes to favorites but cannot
+                navigate from here. (Will be fixed in future)
+              </p>
             </div>
           </div>
           <div className="modal-footer">

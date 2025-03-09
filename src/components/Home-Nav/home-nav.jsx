@@ -2,6 +2,7 @@ import AddRecipeModal from "../../pages/Homepage/add-recipe-modal";
 import "./home-nav.css";
 import FavoriteDialog from "../../pages/Homepage/favorite-dialog/favorite-dialog";
 import { useNavigate } from "react-router-dom";
+
 export default function HomeNav(props) {
   const { searchContent, handleSearch } = props;
   const navigate = useNavigate();

@@ -84,7 +84,7 @@
   place-content: center;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1400px) {
   .home-main-component {
     grid-template-columns: repeat(3, 1fr);
   }

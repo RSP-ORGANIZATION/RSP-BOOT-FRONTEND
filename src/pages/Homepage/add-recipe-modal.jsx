@@ -195,14 +195,14 @@ const AddRecipeModal = () => {
                   type="button"
                   onClick={handleAddIngredients}
                 >
-                  Add Ingredients
+                  Add
                 </button>
                 <button
                   className="btn btn-danger"
                   type="button"
                   onClick={handleDeleteIngredients}
                 >
-                  Delete Ingredients
+                  Delete
                 </button>
               </div>
               <div className="mb-3 steps-parent">
