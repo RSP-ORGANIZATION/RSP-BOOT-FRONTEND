@@ -1,9 +1,9 @@
 .main-app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
 
-  
+
   background-image: url("/food-image.jpg");
   background-size: cover;
   background-position: center;
