@@ -1,0 +1,14 @@
+.nav-custom-style {
+  background-color: rgba(198, 198, 198, 0.434) !important;
+}
+
+.login-button {
+  background-color: white;
+  color: black;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: rgb(204, 204, 204);
+    color: black;
+  }
+}

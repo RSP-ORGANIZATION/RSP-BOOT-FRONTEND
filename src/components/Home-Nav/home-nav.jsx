@@ -20,7 +20,25 @@ export default function HomeNav(props) {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary home-nav-custom">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#" style={{ fontWeight: "bold" }}>
+        <a
+          className="navbar-brand"
+          href="/"
+          style={{
+            fontWeight: "bold",
+            fontSize: "1.5rem",
+            display: "flex",
+            gap: "10px",
+            alignItems: "center",
+            color: "black",
+          }}
+        >
+          <img
+            src="/epic-eats-logo.png"
+            alt="Logo"
+            height={40}
+            width={40}
+            style={{ borderRadius: "7px" }}
+          />
           Epic Eats
         </a>
         <AddRecipeModal />
@@ -75,7 +93,10 @@ export default function HomeNav(props) {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <button className="dropdown-item logout-button" onClick={handleLogout}>
+                  <button
+                    className="dropdown-item logout-button"
+                    onClick={handleLogout}
+                  >
                     Logout
                   </button>
                 </li>
