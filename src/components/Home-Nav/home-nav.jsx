@@ -22,7 +22,7 @@ export default function HomeNav(props) {
       <div className="container-fluid">
         <a
           className="navbar-brand"
-          href="/"
+          href="/home"
           style={{
             fontWeight: "bold",
             fontSize: "1.5rem",
